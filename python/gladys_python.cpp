@@ -145,7 +145,7 @@ BOOST_PYTHON_MODULE(libgladys_python)
         .def("get_weight_band_uchar", &py_weight_map_get_weight_band_uchar)
         ;
     // frontier_exploration
-    bpy::class_<gladys::frontier_detector>("frontier_detector", bpy::init<std::string, std::string>())
+    bpy::class_<gladys::frontier_detector>("frontier_detector", bpy::init<gladys::nav_graph>())
         .def("compute_frontiers", &py_compute_frontiers)
         ;
 }

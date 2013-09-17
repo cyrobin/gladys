@@ -188,9 +188,11 @@ class MainWindow(QtGui.QMainWindow):
         self.switch_raster()
 
     def load_frontiers(self):
+        if not self.ng:
+            print("[error] not ready to load the frontier detector (no graph)")
+            return
         t_start = time.time()
-        self.frontier_detector = gladys.frontier_detector(self.fregion, self.frobot)
-        #TODO Do not duplicate the weight_map ! (re-use self.ng)
+        self.frontier_detector = gladys.frontier_detector(self.ng)
         print("Frontier_Exploration loaded (%.3fs)" % (time.time() - t_start) )
         self.switch_raster()
 

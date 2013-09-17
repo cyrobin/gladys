@@ -16,7 +16,7 @@
 #include <ostream>
 
 #include "gladys/point.hpp"
-#include "gladys/weight_map.hpp"
+#include "gladys/nav_graph.hpp"
 
 // NOTE : it currently work only with 2D points
 
@@ -58,9 +58,7 @@ class frontier_detector {
 
 private :
     /* internal data */
-    const weight_map& map ;                     // the map used to compute frontiers
-    weight_map imap ;                           // internal map, used if no extenal weight_map is provided
-                                                // TODO remove it
+    const nav_graph& ng ;                       // Navigation Graph, used as model of the map
     std::vector< points_t > frontiers ;         // the list of the frontiers
     std::vector< f_attributes > attributes ;    // the frontiers attributes
 
@@ -91,27 +89,21 @@ private :
 
     /** is_frontier
      *
-     * Tell if the given point is a frontier point.
+     * Tell if the given position (vertex) is a frontier.
      *
-     * @param p : the point which is tested.
+     * @param p : the vertex which is tested.
      *
      */
-    bool is_frontier(  const point_xy_t &p, 
-                      size_t height, size_t width,
-                      const gdal::raster& data ) ;
+    bool is_frontier( vertex_t p ) ;
 
     /** find_neighbours()
      *
-     * Return the list of adjacent points (or neighbours) of p
+     * Return the list of adjacent vertices (or neighbours) of p
      *
      * @param p : the point we focus.
      *
-     * @param height : the height of the map.
-     *
-     * @param width : the height of the map.
-     * 
      */
-    points_t find_neighbours( const point_xy_t &p, size_t height, size_t width);
+    vertices_t find_neighbours( vertex_t p );
 
 public:
     /* Name of the available algorithms to compute frontiers */
@@ -119,26 +111,12 @@ public:
 
     /** frontier_detector constructor
      *
-     * Constuctor when there is no pre-existant weight_map.
-     * Create a weight_map which load region and robot model
-     * (see also the weighte map class)
-     *
-     * @param f_region path to a region.tif file
-     * (multi-layers terrains classification probabilities, float32)
-     *
-     * @param f_robot_model to generate the weight map (at least its size)
-     *
-     */
-    frontier_detector( const std::string& f_region, const std::string& f_robot_model ) ;
-
-    /** frontier_detector constructor
-     *
      * Constuctor using a pre-existant weight_map.
      *
-     * @param weight_map : a previously computed weight_map
+     * @param nav_graph : a previously computed graph for navigation (nav_graph)
      *
      */
-    frontier_detector( const weight_map& _map ) ;
+    frontier_detector( const nav_graph& _ng ) ;
 
     /* hidden computing functions */
     /** compute_frontiers
@@ -160,8 +138,8 @@ public:
     //void save_frontiers(const std::string& filepath) ;
 
     /* getters */
-    const weight_map& get_map() const {//{{{
-        return map;
+    const nav_graph& get_graph() const {//{{{
+        return ng;
     }//}}}
     const std::vector< points_t >& get_frontiers() const {//{{{
         return frontiers;

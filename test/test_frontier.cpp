@@ -3,7 +3,7 @@
  *
  * Test the Graph Library for Autonomous and Dynamic Systems
  *
- * author:  crobin /TODO
+ * author:  Cyril Robin <cyril.robin@laas.fr>
  * created: 2013-09-11
  * license: BSD
  */
@@ -80,7 +80,8 @@ BOOST_AUTO_TEST_CASE( test_frontier )
 
     // create a frontier exploration module from the map
     // (Create the weight_map, assumed to be good; cf other unit test)
-    frontier_detector fd ( region_path, robotm_path ) ;
+    nav_graph ng ( region_path, robotm_path ) ;
+    frontier_detector fd ( ng ) ;
 
     // testing frontier detection with defult algorithm
     point_xy_t seed {4,4};
@@ -99,7 +100,6 @@ BOOST_AUTO_TEST_CASE( test_frontier )
     BOOST_TEST_MESSAGE( "Nbr of frontier points : c = " << c );
     BOOST_CHECK_EQUAL( c , 18 );
 
-    //TODO Check on seed position (exception handling)
 }
 
 
