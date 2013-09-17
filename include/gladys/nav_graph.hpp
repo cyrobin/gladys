@@ -79,8 +79,8 @@ public:
         return new_vertex(p);
     }
 
-    vertex_t get_closest_vertex(const point_xy_t& p) {
-        vertex_map_t::iterator it = vertices.find(p);
+    vertex_t get_closest_vertex(const point_xy_t& p) const {
+        vertex_map_t::const_iterator it = vertices.find(p);
         if (it != vertices.end())
             return it->second;
 
