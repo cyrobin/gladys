@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE( test_frontier )
     for ( auto& f : attributes )
         c += f.size ;
     BOOST_TEST_MESSAGE( "Nbr of frontier points : c = " << c );
-    BOOST_CHECK_EQUAL( c , 18 );
+    BOOST_CHECK_EQUAL( c , 56 );
 
 }
 
