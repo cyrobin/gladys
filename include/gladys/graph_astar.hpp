@@ -27,6 +27,7 @@ struct vertex {
 
 struct edge {
     float weight;
+    bool unknown ;  // true if the edge cross unknown area
     time_t t; /**< when the weight has been modified */
 };
 // graph

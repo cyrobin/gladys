@@ -19,8 +19,10 @@ namespace gladys {
 
 void nav_graph::_load() {
     float weight;
+    bool unknown = false ;
     vertex_t vert_w, vert_n, vert_e, vert_s;
     const gdal::raster& weight_map = map.get_weight_band();
+    gdal::raster weight_map = map.get_weight_band();
     // most of the time this is equal to sqrt(2)/2
     float hypotenuse = 0.5 * std::sqrt( scale_x*scale_x + scale_y*scale_y );
 
@@ -36,8 +38,10 @@ void nav_graph::_load() {
 
         // if unknown, then weight is max (100)
         // in order to allow exploration plan in unknown areas.
-        if (weight <= 1)
+        if (weight <= 1) {
             weight = 100.0;
+            unknown = true ;
+        }
 
         vert_w = get_vertex_or_create(scale_x * (px_x - 0.5), scale_y * (px_y      ));
         vert_n = get_vertex_or_create(scale_x * (px_x      ), scale_y * (px_y - 0.5));
@@ -50,6 +54,7 @@ void nav_graph::_load() {
         edge e;
         e.t = t;
         e.weight = hypotenuse * weight;
+        e.unknown = unknown ;
         boost::add_edge(vert_w, vert_n, e, g);
         boost::add_edge(vert_n, vert_e, e, g);
         boost::add_edge(vert_e, vert_s, e, g);
