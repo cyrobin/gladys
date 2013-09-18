@@ -35,10 +35,18 @@ namespace gladys {
 
     /* computing functions */
     void frontier_detector::compute_frontiers_WFD(const point_xy_t &seed) {//{{{
-        graph_t g = ng.get_graph() ;
+        const graph_t& g = ng.get_graph() ;
+
+        std::cout << "ng OK" << std::endl ;
+
+        if (&g == NULL)
+            std::cout << "ng NULL" << std::endl ;
 
         /* get the seed in the graph (related vertex) */
         vertex_t s = ng.get_closest_vertex( seed );
+
+        std::cout << "seed OK" << std::endl ;
+
         // no need to check the position : this is delegated to the graph
         // consistency...
 
@@ -69,23 +77,30 @@ namespace gladys {
         //open_map[ ng.get_map().idx( g[s].pt )] = true ;
         open_map[ s ] = true ;
 
+        std::cout << "init OK" << std::endl ;
+
         int c1 = 0;
         // Main while over queued map points
         while ( !m_queue.empty() ) {
+
+            std::cout << "Begin while 1 : " << ++c1 << std::endl ;
 
             p = m_queue.front();
             m_queue.pop_front();
 
             // if p has already been visited, then continue
-            if ( close_map[ p ] ) {
+            if ( close_map[ p ] )
                 continue ;
-            }
 
             // else, if p is a frontier point,
             // compute the whole related frontier
-            //if ( is_frontier( p ) ) {
-            if ( ng.has_unknown_edge( p ) ) {
+            if ( is_frontier( p ) ) {
+            //if ( ng.has_unknown_edge( p ) ) {
+            //if ( ng.has_unknown_edge( p ) && !ng.is_unknown( p ) ) {
                 int c2 = 0 ;
+
+                std::cout << "Begin while 2 : " << ++c2 << std::endl ;
+
 
                 f_queue.clear();
                 // create a new frontier
@@ -106,8 +121,8 @@ namespace gladys {
 
                     // if p is a frontier point,
                     // deal with it and its neighbours
-                    //if ( is_frontier( q ) ) {
-                    if ( ng.has_unknown_edge( q ) ) {
+                    if ( is_frontier( q ) ) {
+                    //if ( ng.has_unknown_edge( q ) && !ng.is_unknown( q ) ) {
                         frontier_vertices.push_back( q );
                         //for all neighbours of q
                         for ( auto i : ng.get_neighbours( q ) ) {
@@ -140,13 +155,16 @@ namespace gladys {
                // if NOT marked yet
                if  ( !( close_map[ i ] || open_map[ i ])
                // and is in the "Open Space" (not unknown nor an obstacle)
-               //&& ( ! (data[ i ]  < 0 || data[ i ] == HUGE_VALF ))) {
-               // HAS_ALL_EDGE_AS_UNKNOWN => vertex = uknown
-               && !ng.is_unknown( i ) ) {
+               //&& !ng.is_unknown( i ) ) {
+                   ){
+
+                   std::cout << "plip" << std::endl ;
                    // then proceed
                    m_queue.push_back( i );
                    open_map[ i ] = true ;
                }
+               else
+                   std::cout << "plop" << std::endl ;
            }
 
            //mark p
@@ -156,6 +174,9 @@ namespace gladys {
     }//}}}
 
     void frontier_detector::compute_frontiers(const point_xy_t &seed, algo_t algo ){//{{{
+
+        std::cout << "Begin." << std::endl ;
+
         // try running the algo
         switch(algo) {
             case WFD : // Wavefront Frontier Detection
@@ -169,11 +190,18 @@ namespace gladys {
                 break;
         }
 
+        std::cout << "There are " << frontiers.size() << " frontiers." << std::endl ;
+
+
         // compute the frontiers attributes
         compute_attributes( seed );
+        
+        std::cout << "Attributes computed." << std::endl ;
 
         // sort the frontiers attributes by the size criteria
         std::sort( attributes.begin(), attributes.end(), std::greater<f_attributes>() ); // descending order
+
+        std::cout << "and sorted." << std::endl ;
 
     }//}}}
 
@@ -192,6 +220,20 @@ namespace gladys {
         for ( auto& a : attributes )
             a.ratio = (double) a.size / (double) total_fPoints ;
     }//}}}
+
+bool frontier_detector::is_frontier( vertex_t p ) const {//{{{
+    // it must not have any unknown edge
+    //if ( ng.is_unknown( p ) )
+    if ( ng.has_unknown_edge(p) )
+        return false;
+
+    // but must have a neighbour that has one !
+    for( auto& v : ng.get_neighbours(p) )
+        if ( ng.has_unknown_edge(v) )
+            return true;
+
+    return false;
+}//}}}
 
     //void frontier_detector::save_frontiers( const std::string& filepath ) {
     //}

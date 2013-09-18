@@ -41,7 +41,7 @@ void nav_graph::_load() {
             weight = 100.0;
             unknown = true ;
         }
-        else 
+        else
             unknown = false ;
 
         vert_w = get_vertex_or_create(scale_x * (px_x - 0.5), scale_y * (px_y      ));

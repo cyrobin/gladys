@@ -87,33 +87,16 @@ private :
      */
     void compute_attributes( const point_xy_t &seed );
 
-    /** has_unknown_edge
+    /** is_frontier
      *
-     * Tell if the given vertex has at least one edge crossing an unknown area
-     *
-     * @param p : the vertex which is tested.
-     *
-     */
-    bool has_unknown_edge( vertex_t p ) ;
-
-    /** is_unknown
-     *
-     * Tell if the given vertex is 'unknown', i.e. that it is surrounded by
-     * unknown vertex only
+     * Tell if the given vertex is a vertex frontier. To be considered so it
+     * must not have any 'unknown' edge, but should have an adjacent vertex that
+     * has one.
      *
      * @param p : the vertex which is tested.
      *
      */
-    bool is_unknown( vertex_t p ) ;
-
-    /** find_neighbours()
-     *
-     * Return the list of adjacent vertices (or neighbours) of p
-     *
-     * @param p : the point we focus.
-     *
-     */
-    vertices_t find_neighbours( vertex_t p );
+    bool is_frontier( vertex_t p ) const ;
 
 public:
     /* Name of the available algorithms to compute frontiers */
