@@ -84,7 +84,7 @@ namespace gladys {
             // else, if p is a frontier point,
             // compute the whole related frontier
             //if ( is_frontier( p ) ) {
-            if ( has_unknown_edge( p ) ) {
+            if ( ng.has_unknown_edge( p ) ) {
                 int c2 = 0 ;
 
                 f_queue.clear();
@@ -107,10 +107,10 @@ namespace gladys {
                     // if p is a frontier point,
                     // deal with it and its neighbours
                     //if ( is_frontier( q ) ) {
-                    if ( has_unknown_edge( q ) ) {
+                    if ( ng.has_unknown_edge( q ) ) {
                         frontier_vertices.push_back( q );
                         //for all neighbours of q
-                        for ( auto i : find_neighbours( q ) ) {
+                        for ( auto i : ng.get_neighbours( q ) ) {
                             // if NOT marked yet
                             if  ( !( close_map[ i ] || close_frontier[ i ]
                             || open_frontier[ i ])) {
@@ -136,13 +136,13 @@ namespace gladys {
            }
 
            //for all neighbours of p
-           for ( auto i : find_neighbours( p ) ) {
+           for ( auto i : ng.get_neighbours( p ) ) {
                // if NOT marked yet
                if  ( !( close_map[ i ] || open_map[ i ])
                // and is in the "Open Space" (not unknown nor an obstacle)
                //&& ( ! (data[ i ]  < 0 || data[ i ] == HUGE_VALF ))) {
                // HAS_ALL_EDGE_AS_UNKNOWN => vertex = uknown
-               && !is_unknown( i ) ) {
+               && !ng.is_unknown( i ) ) {
                    // then proceed
                    m_queue.push_back( i );
                    open_map[ i ] = true ;
@@ -154,40 +154,6 @@ namespace gladys {
         }
         //}}}
     }//}}}
-
-    bool frontier_detector::is_frontier( vertex_t p ) {    //{{{
-        return false;
-    }//}}}
-
-    bool frontier_detector::has_unknown_edge( vertex_t p ) {    //{{{
-        const graph_t& g = ng.get_graph() ;
-        boost::graph_traits<graph_t>::out_edge_iterator ei,ei_end;
-        for ( boost::tie(ei, ei_end) = boost::out_edges(p, g ); ei != ei_end; ++ei )
-            if ( g[*ei].unknown )
-                return true ;
-
-        return false;
-    }//}}}
-
-    bool frontier_detector::is_unknown( vertex_t p ) {    //{{{
-        const graph_t& g = ng.get_graph() ;
-        boost::graph_traits<graph_t>::out_edge_iterator ei,ei_end;
-        for ( boost::tie(ei, ei_end) = boost::out_edges(p, g ); ei != ei_end; ++ei )
-            if ( !g[*ei].unknown )
-                return false ;
-
-        return true ;
-    }//}}}
-
-    vertices_t frontier_detector::find_neighbours( vertex_t p ) {//{{{
-       vertices_t neighbours ;
-       boost::adjacent_vertices(p, ng.get_graph());
-       boost::graph_traits<graph_t>::adjacency_iterator vi,vi_end;
-       for ( boost::tie(vi, vi_end) = boost::adjacent_vertices(p, ng.get_graph() ); vi != vi_end; ++vi )
-           neighbours.push_back(*vi);
-
-       return neighbours ;
-   }//}}}
 
     void frontier_detector::compute_frontiers(const point_xy_t &seed, algo_t algo ){//{{{
         // try running the algo

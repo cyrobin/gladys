@@ -87,15 +87,6 @@ private :
      */
     void compute_attributes( const point_xy_t &seed );
 
-    /** is_frontier
-     *
-     * Tell if the given position (vertex) is a frontier.
-     *
-     * @param p : the vertex which is tested.
-     *
-     */
-    bool is_frontier( vertex_t p ) ;
-
     /** has_unknown_edge
      *
      * Tell if the given vertex has at least one edge crossing an unknown area
