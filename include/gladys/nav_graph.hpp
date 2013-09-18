@@ -100,6 +100,35 @@ public:
     path_t astar_search(const point_xy_t& start, const point_xy_t& goal);
     path_cost_util_t astar_search(const points_t& start, const points_t& goal);
 
+    /** has_unknown_edge
+     *
+     * Tell if the given vertex has at least one edge crossing an unknown area
+     *
+     * @param p : the vertex which is tested.
+     *
+     */
+    bool has_unknown_edge( vertex_t p ) const ;
+
+    /** is_unknown
+     *
+     * Tell if the given vertex is 'unknown', i.e. that it is surrounded by
+     * unknown vertex only
+     *
+     * @param p : the vertex which is tested.
+     *
+     */
+    bool is_unknown( vertex_t p ) const ;
+
+    /** get_neighbours()
+     *
+     * Return the list of adjacent vertices (or neighbours) of p
+     *
+     * @param p : the point we focus.
+     *
+     */
+    vertices_t get_neighbours( vertex_t p ) const ;
+
+
     /** Write graphviz .dot file
      *
      * @param out output stream to write .dot data

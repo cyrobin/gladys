@@ -19,7 +19,7 @@ namespace gladys {
 
 void nav_graph::_load() {
     float weight;
-    bool unknown = false ;
+    bool unknown;
     vertex_t vert_w, vert_n, vert_e, vert_s;
     const gdal::raster& weight_map = map.get_weight_band();
     // most of the time this is equal to sqrt(2)/2
@@ -41,6 +41,8 @@ void nav_graph::_load() {
             weight = 100.0;
             unknown = true ;
         }
+        else 
+            unknown = false ;
 
         vert_w = get_vertex_or_create(scale_x * (px_x - 0.5), scale_y * (px_y      ));
         vert_n = get_vertex_or_create(scale_x * (px_x      ), scale_y * (px_y - 0.5));
@@ -147,5 +149,34 @@ nav_graph::write_graphviz(const std::string& filepath) const {
     write_graphviz( of );
     of.close();
 }
+
+bool nav_graph::has_unknown_edge( vertex_t p ) const {//{{{
+    boost::graph_traits<graph_t>::out_edge_iterator ei,ei_end;
+    for ( boost::tie(ei, ei_end) = boost::out_edges(p, g); ei != ei_end; ++ei ) {
+        if ( g[*ei].unknown )
+            return true ;
+    }
+
+    return false;
+}//}}}
+
+bool nav_graph::is_unknown( vertex_t p ) const {//{{{
+    boost::graph_traits<graph_t>::out_edge_iterator ei,ei_end;
+    for ( boost::tie(ei, ei_end) = boost::out_edges(p, g); ei != ei_end; ++ei )
+        if ( !g[*ei].unknown )
+            return false ;
+
+    return true ;
+}//}}}
+
+vertices_t nav_graph::get_neighbours( vertex_t p ) const {//{{{
+   vertices_t neighbours ;
+   boost::adjacent_vertices(p, g);
+   boost::graph_traits<graph_t>::adjacency_iterator vi,vi_end;
+   for ( boost::tie(vi, vi_end) = boost::adjacent_vertices(p, g); vi != vi_end; ++vi )
+       neighbours.push_back(*vi);
+
+   return neighbours ;
+}//}}}
 
 } // namespace gladys
