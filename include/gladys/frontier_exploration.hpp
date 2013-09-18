@@ -96,6 +96,25 @@ private :
      */
     bool is_frontier( vertex_t p ) ;
 
+    /** has_unknown_edge
+     *
+     * Tell if the given vertex has at least one edge crossing an unknown area
+     *
+     * @param p : the vertex which is tested.
+     *
+     */
+    bool has_unknown_edge( vertex_t p ) ;
+
+    /** is_unknown
+     *
+     * Tell if the given vertex is 'unknown', i.e. that it is surrounded by
+     * unknown vertex only
+     *
+     * @param p : the vertex which is tested.
+     *
+     */
+    bool is_unknown( vertex_t p ) ;
+
     /** find_neighbours()
      *
      * Return the list of adjacent vertices (or neighbours) of p
